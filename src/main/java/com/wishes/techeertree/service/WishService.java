@@ -20,15 +20,19 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
+    public Optional<Wish> findWishById(Long id) {
+        return wishRepository.findActiveById(id);
+    }
+
+    public Optional<Wish> findApprovedWishById(Long id) {
+        return wishRepository.findApprovedById(id);
+    }
+
     public Wish registerWish(Wish wish) {
         if (wish.getTitle() == null || wish.getContent() == null || wish.getCategory() == null) {
             throw new IllegalArgumentException("제목, 내용, 카테고리는 필수 입력 사항입니다.");
         }
         return wishRepository.save(wish);
-    }
-
-    public Optional<Wish> findWishById(Long id) {
-        return wishRepository.findActiveById(id);
     }
 
     public List<Wish> findAllWishes() {
@@ -72,4 +76,6 @@ public class WishService {
             throw new IllegalArgumentException("해당 ID의 소원을 찾을 수 없습니다.");
         }
     }
+
+
 }

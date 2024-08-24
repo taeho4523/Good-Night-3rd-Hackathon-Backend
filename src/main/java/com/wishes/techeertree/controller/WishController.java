@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/wishes")
@@ -74,6 +75,15 @@ public class WishController {
             return new ResponseEntity<>(updatedWish, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/approved/{id}")
+    public ResponseEntity<Wish> getApprovedWish(@PathVariable Long id) {
+        Optional<Wish> wish = wishService.findApprovedWishById(id);
+        if (wish.isPresent()) {
+            return new ResponseEntity<>(wish.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
