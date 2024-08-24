@@ -27,6 +27,9 @@ public class Wish {
     @Column(nullable = false)
     private WishStatus isConfirm;
 
+    @Column
+    private LocalDateTime deletedAt;
+
     public Wish() {
         this.isConfirm = WishStatus.PENDING;
         this.createdDate = LocalDateTime.now();
@@ -80,5 +83,17 @@ public class Wish {
 
     public void setIsConfirm(WishStatus isConfirm) {
         this.isConfirm = isConfirm;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
     }
 }

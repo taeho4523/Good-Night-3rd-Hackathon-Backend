@@ -5,6 +5,8 @@ import com.wishes.techeertree.repository.WishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;  // 이 부분을 추가합니다
 import java.util.Optional;
 
 @Service
@@ -25,6 +27,21 @@ public class WishService {
     }
 
     public Optional<Wish> findWishById(Long id) {
-        return wishRepository.findById(id);
+        return wishRepository.findActiveById(id);
+    }
+
+    public List<Wish> findAllWishes() {
+        return wishRepository.findAllActive();
+    }
+
+    public void deleteWish(Long id) {
+        Optional<Wish> wishOptional = wishRepository.findActiveById(id);
+        if (wishOptional.isPresent()) {
+            Wish wish = wishOptional.get();
+            wish.setDeletedAt(LocalDateTime.now());
+            wishRepository.save(wish);
+        } else {
+            throw new IllegalArgumentException("해당 ID의 소원을 찾을 수 없습니다.");
+        }
     }
 }
