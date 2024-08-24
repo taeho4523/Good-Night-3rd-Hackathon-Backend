@@ -1,5 +1,6 @@
 package com.wishes.techeertree.entity;
 
+import java.util.List;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -95,5 +96,17 @@ public class Wish {
 
     public boolean isDeleted() {
         return this.deletedAt != null;
+    }
+    @OneToMany(mappedBy = "wish", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
+    // Getters and Setters
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
