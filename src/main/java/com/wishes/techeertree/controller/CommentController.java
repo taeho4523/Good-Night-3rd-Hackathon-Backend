@@ -42,4 +42,13 @@ public class CommentController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+        try {
+            commentService.deleteComment(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

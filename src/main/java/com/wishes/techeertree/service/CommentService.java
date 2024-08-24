@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class CommentService {
 
@@ -40,5 +42,12 @@ public class CommentService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
         return commentRepository.findByWishAndDeletedAtIsNull(wish, pageable);
+    }
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 댓글을 찾을 수 없습니다."));
+
+        comment.setDeletedAt(LocalDateTime.now());
+        commentRepository.save(comment);
     }
 }

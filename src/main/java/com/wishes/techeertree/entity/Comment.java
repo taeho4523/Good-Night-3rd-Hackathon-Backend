@@ -20,6 +20,9 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
+    @Column
+    private LocalDateTime deletedAt;
+
     public Comment() {
         this.createdDate = LocalDateTime.now();
     }
