@@ -5,11 +5,13 @@ import com.wishes.techeertree.entity.WishStatus;
 import com.wishes.techeertree.repository.WishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 @Service
 public class WishService {
 
@@ -76,6 +78,9 @@ public class WishService {
             throw new IllegalArgumentException("해당 ID의 소원을 찾을 수 없습니다.");
         }
     }
-
+    public Page<Wish> findWishesByStatus(WishStatus status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        return wishRepository.findByIsConfirmAndDeletedAtIsNull(status, pageable);
+    }
 
 }
