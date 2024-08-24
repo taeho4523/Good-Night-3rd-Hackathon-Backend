@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.wishes.techeertree.entity.Category;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -82,5 +83,12 @@ public class WishService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
         return wishRepository.findByIsConfirmAndDeletedAtIsNull(status, pageable);
     }
-
+    public Page<Wish> searchWishes(String keyword, Category category, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        if (category != null) {
+            return wishRepository.searchByKeywordAndCategory(keyword, category, pageable);
+        } else {
+            return wishRepository.searchByKeyword(keyword, pageable);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.wishes.techeertree.controller;
 
+import com.wishes.techeertree.entity.Category;
 import com.wishes.techeertree.entity.WishStatus;
 import com.wishes.techeertree.entity.Wish;
 import com.wishes.techeertree.service.WishService;
@@ -94,6 +95,16 @@ public class WishController {
             @RequestParam(defaultValue = "10") int size) {
 
         Page<Wish> wishes = wishService.findWishesByStatus(status, page, size);
+        return new ResponseEntity<>(wishes, HttpStatus.OK);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<Page<Wish>> searchWishes(
+            @RequestParam String keyword,
+            @RequestParam(required = false) Category category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<Wish> wishes = wishService.searchWishes(keyword, category, page, size);
         return new ResponseEntity<>(wishes, HttpStatus.OK);
     }
 }
