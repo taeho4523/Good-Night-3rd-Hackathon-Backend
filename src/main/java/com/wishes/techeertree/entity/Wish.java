@@ -1,5 +1,6 @@
 package com.wishes.techeertree.entity;
 
+import java.util.List;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -26,6 +27,9 @@ public class Wish {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private WishStatus isConfirm;
+
+    @Column
+    private LocalDateTime deletedAt;
 
     public Wish() {
         this.isConfirm = WishStatus.PENDING;
@@ -80,5 +84,29 @@ public class Wish {
 
     public void setIsConfirm(WishStatus isConfirm) {
         this.isConfirm = isConfirm;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
+    @OneToMany(mappedBy = "wish", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
+    // Getters and Setters
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

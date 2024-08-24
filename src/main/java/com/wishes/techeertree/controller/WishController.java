@@ -1,11 +1,16 @@
 package com.wishes.techeertree.controller;
 
+import com.wishes.techeertree.entity.Category;
+import com.wishes.techeertree.entity.WishStatus;
 import com.wishes.techeertree.entity.Wish;
 import com.wishes.techeertree.service.WishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/wishes")
@@ -33,5 +38,73 @@ public class WishController {
         return wishService.findWishById(id)
                 .map(wish -> new ResponseEntity<>(wish, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<Wish>> getAllWishes() {
+        return new ResponseEntity<>(wishService.findAllWishes(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWish(@PathVariable Long id) {
+        try {
+            wishService.deleteWish(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/pending")
+    public ResponseEntity<List<Wish>> getPendingWishes() {
+        return new ResponseEntity<>(wishService.findPendingWishes(), HttpStatus.OK);
+    }
+
+    @PutMapping("/approve/{id}")
+    public ResponseEntity<Wish> approveWish(@PathVariable Long id) {
+        try {
+            Wish updatedWish = wishService.approveWish(id);
+            return new ResponseEntity<>(updatedWish, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/reject/{id}")
+    public ResponseEntity<Wish> rejectWish(@PathVariable Long id) {
+        try {
+            Wish updatedWish = wishService.rejectWish(id);
+            return new ResponseEntity<>(updatedWish, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/approved/{id}")
+    public ResponseEntity<Wish> getApprovedWish(@PathVariable Long id) {
+        Optional<Wish> wish = wishService.findApprovedWishById(id);
+        if (wish.isPresent()) {
+            return new ResponseEntity<>(wish.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/list")
+    public ResponseEntity<Page<Wish>> getWishes(
+            @RequestParam WishStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<Wish> wishes = wishService.findWishesByStatus(status, page, size);
+        return new ResponseEntity<>(wishes, HttpStatus.OK);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<Page<Wish>> searchWishes(
+            @RequestParam String keyword,
+            @RequestParam(required = false) Category category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<Wish> wishes = wishService.searchWishes(keyword, category, page, size);
+        return new ResponseEntity<>(wishes, HttpStatus.OK);
     }
 }
