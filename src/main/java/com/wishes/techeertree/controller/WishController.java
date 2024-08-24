@@ -51,4 +51,29 @@ public class WishController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/pending")
+    public ResponseEntity<List<Wish>> getPendingWishes() {
+        return new ResponseEntity<>(wishService.findPendingWishes(), HttpStatus.OK);
+    }
+
+    @PutMapping("/approve/{id}")
+    public ResponseEntity<Wish> approveWish(@PathVariable Long id) {
+        try {
+            Wish updatedWish = wishService.approveWish(id);
+            return new ResponseEntity<>(updatedWish, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/reject/{id}")
+    public ResponseEntity<Wish> rejectWish(@PathVariable Long id) {
+        try {
+            Wish updatedWish = wishService.rejectWish(id);
+            return new ResponseEntity<>(updatedWish, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
